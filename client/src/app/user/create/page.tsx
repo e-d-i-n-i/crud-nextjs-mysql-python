@@ -1,84 +1,126 @@
 "use client";
 
-import React, { useState } from "react";
-import axios from 'axios' //npm install axios https://www.npmjs.com/package/axios
+import { useState } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
-const CreateUserPage = () => {
-    const [userField, setUserField] = useState({
-        name: "",
-        email: "",
-        password: ""
-    });
+// Zod schema for form validation
+const formSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address").min(1, "Email is required"),
+  password: z.string().min(6, "Password should be at least 6 characters"),
+});
 
-    const changeUserFieldHandler = (e) => {
-        setUserField({
-            ...userField,
-            [e.target.name]: e.target.value
-        });
-        console.log(userField);
+export default function CreateUserPage() {
+  // Setup react-hook-form
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+  });
+
+  // Handle form submission
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post("http://127.0.0.1:5000/newuser", data);
+      console.log(response);
+      toast.success("User added successfully!");
+      window.location.href = "/";
+    } catch (error) {
+      console.log("Error:", error);
+      toast.error("Failed to add user.");
     }
+  };
 
-    const onSubmitChange = async (e) => {
-        e.preventDefault();
-        try {
-          const responce= await axios.post("http://127.0.0.1:5000/newuser", userField);
-          console.log(responce)
-          window.location.href = '/';
-        } catch (err) {
-            console.log("Something Wrong");
-        }
-    }
-    
-    return (
+  return (
     <div className="max-w-md mx-auto mt-5">
-        <h1 className="text-2xl text-center mb-2">Add New User</h1>
-        <div>
-        <form>
-        <div className="mb-5">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-900">
-            Full Name
-          </label>
-          <input
-            type="text"
+      <h1 className="text-2xl text-center mb-4">Add New User</h1>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6 max-w-xl mx-auto py-10"
+        >
+          {/* Full Name Field */}
+          <FormField
+            control={form.control}
             name="name"
-            id="name"
-            className="input input-bordered input-primary w-full max-w-xs"
-            placeholder="Full Name..."
-            onChange={e => changeUserFieldHandler(e)} 
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Full Name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter your full name"
+                    type="text"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormDescription>Your first and last name</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <div className="mb-5">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-900">
-            Email
-          </label>
-          <input
-            type="email"
+
+          {/* Email Field */}
+          <FormField
+            control={form.control}
             name="email"
-            id="email"
-            className="input input-bordered input-primary w-full max-w-xs"
-            placeholder="Email..."
-            onChange={e => changeUserFieldHandler(e)} 
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter your email"
+                    type="email"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormDescription>Your email address</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <div className="mb-5">
-          <label
-            htmlFor="password" className="block text-sm font-medium text-gray-900">
-            Password
-          </label>
-          <input
-            type="text"
+
+          {/* Password Field */}
+          <FormField
+            control={form.control}
             name="password"
-            id="password"
-            className="input input-bordered input-primary w-full max-w-xs"
-            placeholder="Password..."
-            onChange={e => changeUserFieldHandler(e)} 
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter a secure password"
+                    type="password"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormDescription>Your password</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <button type="submit" className="btn btn-primary" onClick={e => onSubmitChange(e)}>Add User</button> 
-      </form>
-    </div>
+
+          {/* Submit Button */}
+          <Button type="submit" className="w-full">
+            Add User
+          </Button>
+        </form>
+      </Form>
     </div>
   );
-};
-  
-export default CreateUserPage;
+}

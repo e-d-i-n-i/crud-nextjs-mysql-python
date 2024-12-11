@@ -1,23 +1,29 @@
 import Link from "next/link";
-import TableData from "../../components/tabledata";
+import TableData from "../components/tabledata";
 import { Suspense } from "react";
-import { Spinner } from "../../components/spinner";
+import { Spinner } from "../components/spinner";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="w-screen py-20 flex justify-center flex-col items-center">
-      <div className="flex items-center justify-between gap-1 mb-5">
+    <div className="w-screen py-10 lg:py-20 flex justify-center flex-col items-center px-4 sm:px-8 lg:px-20">
+      <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white py-6 w-full text-center mb-5">
         <h1 className="text-4xl font-bold">
-          Next.js 14 Python Flask CRUD Mysql (Create Read Update and Delete)|
-          TailwindCSS DaisyUI
+          Next.js 14 Python Flask CRUD Mysql
         </h1>
       </div>
-      <div className="overflow-x-auto">
-        <div className="mb-2 w-full text-right">
-          <Link href="/user/create" className="btn btn-primary">
-            Create
+      <div className="mb-2 w-full flex justify-end">
+        <Button asChild>
+          <Link
+            href="/user/create"
+            className="btn btn-primary hover:bg-blue-600 focus:ring-2 focus:ring-blue-300"
+          >
+            <Plus /> Create New User
           </Link>
-        </div>
+        </Button>
+      </div>
+      <div className="overflow-x-auto shadow-md rounded-lg border border-gray-200 p-4 bg-white">
         <Suspense fallback={<Spinner />}>
           <TableData />
         </Suspense>
