@@ -7,8 +7,8 @@ import { Plus } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="w-screen py-10 lg:py-20 flex justify-center flex-col items-center px-4 sm:px-8 lg:px-20">
-      <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white py-6 w-full text-center mb-5">
+    <div className="w-full py-5 lg:flex justify-center flex-col items-center px-4 sm:px-8 lg:px-20">
+      <div className="bg-gradient-to-r from-black to-purple-500 text-white py-6 w-full text-center mb-5">
         <h1 className="text-4xl font-bold">
           Next.js 14 Python Flask CRUD Mysql
         </h1>
@@ -23,7 +23,7 @@ export default function Home() {
           </Link>
         </Button>
       </div>
-      <div className="overflow-x-auto shadow-md rounded-lg border border-gray-200 p-4 bg-white">
+      <div className=" shadow-md rounded-lg border border-gray-200 p-4 bg-white">
         <Suspense fallback={<Spinner />}>
           <TableData />
         </Suspense>
