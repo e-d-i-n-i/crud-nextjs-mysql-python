@@ -59,18 +59,24 @@ def update_user(id):
     data = request.get_json()
     name = data.get('name')
     email = data.get('email')
+    password = data.get('password')  # Include password in the update logic
 
+    # Validate input
     if not name or not email:
         return jsonify({"error": "Name and email are required"}), 400
 
     try:
         user.name = name
         user.email = email
+        if password:  # Only update password if provided
+            user.password = password
+        
         db.session.commit()
         return jsonify(user_schema.dump(user)), 200
     except SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/userdelete/<int:id>', methods=['DELETE'])
 def delete_user(id):
